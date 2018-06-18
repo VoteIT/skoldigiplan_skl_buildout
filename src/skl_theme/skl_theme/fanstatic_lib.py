@@ -7,13 +7,13 @@ from js.bootstrap import bootstrap_css
 
 library = Library('skl_theme', 'static')
 
-skl_theme_css = Resource(library, 'css/main.css', depends = (bootstrap_css,))
+skl_custom_bootstrap_css = Resource(library, 'css/bootstrap.css', supersedes=(bootstrap_css,))
+skl_theme_css = Resource(library, 'css/main.css', depends = (skl_custom_bootstrap_css,))
 
 
-#def need_subscriber(view, event):
-#    skl_theme_css.need()
+def need_subscriber(view, event):
+    skl_theme_css.need()
 
 
 def includeme(config):
-    pass
- #   config.add_subscriber(need_subscriber, [IBaseView, IViewInitializedEvent])
+    config.add_subscriber(need_subscriber, [IBaseView, IViewInitializedEvent])

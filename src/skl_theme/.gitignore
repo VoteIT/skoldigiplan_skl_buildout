@@ -14,3 +14,4 @@ eggs
 include
 lib
 src
+.sass-cache
