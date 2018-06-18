@@ -27,3 +27,6 @@ var/
 .DS_Store
 .installed.cfg
 .mr.developer.cfg
+.Python
+.idea
+pip-selfcheck.json
