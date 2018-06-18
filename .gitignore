@@ -11,7 +11,8 @@ eggs
 include/
 lib/
 local/
-src/
+src/*
+!src/skl_theme
 build/
 dist/
 parts/
