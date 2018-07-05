@@ -29,13 +29,43 @@ def get_kommun_values():
     return values
 
 
+_organisation_values = (
+    ('kommun', "Kommun"),
+    ('kommunal_skola', "Kommunal skola"),
+    ('fristaende_skola', "Fristående skola"),
+    ('kommunal_huvudman', "Kommunal huvudman"),
+    ('fristaende_huvudman', "Fristående huvudman"),
+    ('myndighet', "Myndighet"),
+    ('larosate', "Lärosäte"),
+    ('annat_foretag', "Annat företag"),
+    ('branschorganisation', "Branschorganisation"),
+    ('ideell_organisation', "Ideell organisation"),
+)
+
+
 def inject_profile_extras(schema, event):
     schema.add(
         colander.SchemaNode(
             colander.Int(),
             name='kommun',
-            title = "Vilken kommun är du verksam i?",
+            title = "Vilken kommun är du verksam alternativt folkbokförd i?",
             widget=deform.widget.Select2Widget(values=get_kommun_values()),
+        )
+    )
+    schema.add(
+        colander.SchemaNode(
+            colander.Set(),
+            name='organisation',
+            title="Vad beskriver bäst din organisation? Du kan välja flera.",
+            widget=deform.widget.CheckboxChoiceWidget(values=_organisation_values),
+        )
+    )
+    schema.add(
+        colander.SchemaNode(
+            colander.String(),
+            name="free_text_org",
+            title = "Om inget ovan passar kan du skriva organisation här",
+            missing="",
         )
     )
     schema.add(
