@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 
 import argparse
-from collections import Counter
 
 from pyramid.paster import bootstrap
 from skl_theme.schemas import get_kommun_values
@@ -19,13 +18,7 @@ if __name__ == '__main__':
     request = env['request']
     meeting = root[args.meeting]
     kommuner = dict(get_kommun_values())
-
-
-    kommun_counter = Counter()
-
     for userid in find_role_userids(meeting, ROLE_VOTER):
         user = root['users'][userid]
-        print kommuner.get(user.kommun, '').ljust(40), user.work_role
-
+        print kommuner.get(user.kommun, ''), "\t", user.work_role
     env['closer']()
-
