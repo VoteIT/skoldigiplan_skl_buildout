@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 import csv
 import os
 
@@ -7,6 +9,8 @@ import deform
 from arche.interfaces import ISchemaCreatedEvent
 from arche.schemas import UserSchema
 from arche.schemas import FinishRegistrationSchema
+
+from skl_theme.interfaces import IEffectSettings
 
 
 kommuner_cached = {}
@@ -78,6 +82,56 @@ def inject_profile_extras(schema, event):
     )
 
 
+class EffectSettingsSchema(colander.Schema):
+    effect_active = colander.SchemaNode(
+        colander.Bool(),
+        title="Aktivera knapp för effekter",
+    )
+    effect_actors = colander.SchemaNode(
+        colander.String(),
+        title="Aktörer",
+        description="Skrivs som sammansatta ord, utan # eller andra specialtecken. En per rad.",
+        widget=deform.widget.TextAreaWidget(rows=5),
+        missing="",
+    )
+
+
+@colander.deferred
+def effect_actors_widget(node, kw):
+    request = kw['request']
+    settings = IEffectSettings(request.meeting)
+    values = [(x, x) for x in settings.get('effect_actors', ())]
+    return deform.widget.CheckboxChoiceWidget(
+        values=values
+    )
+
+
+class EditEffectsSchema(colander.Schema):
+    widget = deform.widget.FormWidget(template='voteit_form_inline')
+    effect_time = colander.SchemaNode(
+        colander.String(),
+        title="Genomförandetid",
+        widget=deform.widget.SelectWidget(values=(
+            ("", "- Ingen vald -"),
+            ("Kort", "Kort"),
+            ("Medel", "Medel"),
+            ("Lång", "Lång"),
+        )),
+        missing="",
+    )
+    effect_actors = colander.SchemaNode(
+        colander.List(),
+        title="Aktör(er)",
+        description="Välj max 2 st. Om det är fler involverade kan det vara bra att "
+                    "formulera förslag mer precist för de olika aktörerna.",
+        widget=effect_actors_widget,
+        validator=colander.Length(max=2),
+        missing=()
+    )
+
+
 def includeme(config):
     config.add_subscriber(inject_profile_extras, [UserSchema, ISchemaCreatedEvent])
     config.add_subscriber(inject_profile_extras, [FinishRegistrationSchema, ISchemaCreatedEvent])
+    config.add_schema('Meeting', EffectSettingsSchema, 'effect_settings')
+    config.add_schema('Proposal', EditEffectsSchema, 'edit_effects')

@@ -1,0 +1,24 @@
+<tal:main xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal">
+  <p tal:omit-tag="notice">
+    <div class="alert alert-warning" role="alert" tal:omit-tag="not notice">
+        <tal:notice tal:condition="notice">
+          Lägg till
+        </tal:notice>
+      <a href="${request.resource_url(context, 'edit_effects')}"
+         title=""
+         id="effect-edit-${context.uid}"
+         role="button"
+         class="${notice and 'alert-link' or 'btn btn-default btn-xs'}"
+         data-placement="bottom"
+         data-external-popover-loaded="false">
+        <span class="${not notice and 'text-primary' or None}">
+          <span class="glyphicon glyphicon-tags"></span>
+          ${title}
+        </span>
+      </a>
+
+    </div>
+  </p>
+</tal:main>
