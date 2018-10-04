@@ -106,6 +106,12 @@ def effect_actors_widget(node, kw):
     )
 
 
+def hashtag_text_validator(node, value):
+    # FIXME: Proper validation against one word per row, unicode chars okay but nothing else
+    # Essentialy a valid hashtag without the #.
+    pass
+
+
 class EditEffectsSchema(colander.Schema):
     widget = deform.widget.FormWidget(template='voteit_form_inline')
     effect_time = colander.SchemaNode(
@@ -125,7 +131,7 @@ class EditEffectsSchema(colander.Schema):
         description="Välj max 2 st. Om det är fler involverade kan det vara bra att "
                     "formulera förslag mer precist för de olika aktörerna.",
         widget=effect_actors_widget,
-        validator=colander.Length(max=2),
+        validator=colander.All(colander.Length(max=2), hashtag_text_validator),
         missing=()
     )
 
