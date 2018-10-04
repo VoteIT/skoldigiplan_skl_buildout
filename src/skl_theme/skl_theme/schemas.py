@@ -83,6 +83,15 @@ def inject_profile_extras(schema, event):
     )
 
 
+def hashtag_text_validator(node, value):
+    # Validation against one word per row, unicode chars okay but nothing else
+    # Essentialy a valid hashtag without the #.
+    pattern = re.compile('^[\w-]+$', re.UNICODE)
+    for i, line in enumerate(value.splitlines()):
+        if not pattern.match(line):
+            raise colander.Invalid(node, 'Felaktig hashtag på rad {}'.format(i+1))
+
+
 class EffectSettingsSchema(colander.Schema):
     effect_active = colander.SchemaNode(
         colander.Bool(),
@@ -93,6 +102,7 @@ class EffectSettingsSchema(colander.Schema):
         title="Aktörer",
         description="Skrivs som sammansatta ord, utan # eller andra specialtecken. En per rad.",
         widget=deform.widget.TextAreaWidget(rows=5),
+        validator=hashtag_text_validator,
         missing="",
     )
 
@@ -105,15 +115,6 @@ def effect_actors_widget(node, kw):
     return deform.widget.CheckboxChoiceWidget(
         values=values
     )
-
-
-def hashtag_text_validator(node, value):
-    # Validation against one word per row, unicode chars okay but nothing else
-    # Essentialy a valid hashtag without the #.
-    pattern = re.compile('^[\w\d_-]+$', re.UNICODE)
-    for i, line in enumerate(value.splitlines()):
-        if not pattern.match(line):
-            raise colander.Invalid('Felaktig hashtag på rad {}'.format(i))
 
 
 class EditEffectsSchema(colander.Schema):
@@ -135,7 +136,7 @@ class EditEffectsSchema(colander.Schema):
         description="Välj max 2 st. Om det är fler involverade kan det vara bra att "
                     "formulera förslag mer precist för de olika aktörerna.",
         widget=effect_actors_widget,
-        validator=colander.All(colander.Length(max=2), hashtag_text_validator),
+        validator=colander.Length(max=2),
         missing=()
     )
 
