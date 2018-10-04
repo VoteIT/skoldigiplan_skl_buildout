@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import csv
 import os
+import re
 
 import colander
 import deform
@@ -107,9 +108,12 @@ def effect_actors_widget(node, kw):
 
 
 def hashtag_text_validator(node, value):
-    # FIXME: Proper validation against one word per row, unicode chars okay but nothing else
+    # Validation against one word per row, unicode chars okay but nothing else
     # Essentialy a valid hashtag without the #.
-    pass
+    pattern = re.compile('^[\w\d_-]+$', re.UNICODE)
+    for i, line in enumerate(value.splitlines()):
+        if not pattern.match(line):
+            raise colander.Invalid('Felaktig hashtag på rad {}'.format(i))
 
 
 class EditEffectsSchema(colander.Schema):
