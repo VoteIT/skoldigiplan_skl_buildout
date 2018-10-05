@@ -122,11 +122,12 @@ class EditEffectsSchema(colander.Schema):
     effect_time = colander.SchemaNode(
         colander.String(),
         title="Genomförandetid",
+        description="När det här kommer få huvudsaklig effekt?",
         widget=deform.widget.SelectWidget(values=(
             ("", "- Ingen vald -"),
-            ("Kort", "Kort"),
-            ("Medel", "Medel"),
-            ("Lång", "Lång"),
+            ("TidKort", "Kort (inom ett år)"),
+            ("TidMedel", "Medel (1-3 år)"),
+            ("TidLång", "Lång (3-5 år)"),
         )),
         missing="",
     )
