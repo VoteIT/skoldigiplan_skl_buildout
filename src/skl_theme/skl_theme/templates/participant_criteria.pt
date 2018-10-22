@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="view.macro('arche:templates/base_view.pt', 'arche:templates/inline.pt')"
+      i18n:domain="voteit.skl_theme">
+<body>
+  <div metal:fill-slot="main-content">
+    <h1>Kommuner och organisationer</h1>
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Kommun</th>
+            <th>Deltagare</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr tal:repeat="(kommun,count) kommuner.items()">
+            <td>${kommun}</td>
+            <td>${count}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Organisation</th>
+            <th>Deltagare</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr tal:repeat="(org,count) organisationer.items()">
+            <td>${org}</td>
+            <td>${count}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>
