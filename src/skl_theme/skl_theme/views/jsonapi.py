@@ -4,6 +4,7 @@ from calendar import timegm
 from arche.views.base import BaseView
 from arche.interfaces import IRoot
 from pyramid.httpexceptions import HTTPForbidden
+from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.traversal import resource_path
 from pyramid.view import view_config
 from pyramid.view import view_defaults
@@ -12,7 +13,7 @@ from voteit.core.helpers import get_meeting_participants
 from voteit.core.models.interfaces import IMeeting
 
 
-@view_defaults(renderer='json')
+@view_defaults(renderer='json', permission=NO_PERMISSION_REQUIRED)
 class JSONViews(BaseView):
     """
         Has two main views:
