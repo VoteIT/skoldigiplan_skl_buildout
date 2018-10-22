@@ -1,29 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-
-Rådslag
-- Frågorna i sig
-- Mötes protokoll (Dvs, start, slut, eventuell röstning)
-
-Förslag
-- Hashtaggen
-- Texten
-- Tid/Datum när inlägget gjordes
-- Användare (Kommer anonynmeras tillslut)
-- Antalet "Gilla"
-- Alla taggar som är med (t.ex Medel, Skolverket etc...).
-
-Diskussioner
-- Samma som ovan
-
-Omröstning
-- Resultatet av omröstningen! Dvs antal röster för varje förslag. Alla dessa siffror.
-- Om det går, vem som röstade på vad. Detta i syfte att senare kunna vissa Arbetsroll
-    eller vilken Kommun dom som röstar kommer i från. Intressant att se på karta t.ex!
-
-Användare
-- Deras arbetsroll och geografiska läge.
-"""
 from calendar import timegm
 
 from arche.views.base import BaseView
