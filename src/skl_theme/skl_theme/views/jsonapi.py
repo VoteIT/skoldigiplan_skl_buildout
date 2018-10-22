@@ -28,6 +28,7 @@ from calendar import timegm
 
 from arche.views.base import BaseView
 from arche.interfaces import IRoot
+from pyramid.httpexceptions import HTTPForbidden
 from pyramid.traversal import resource_path
 from pyramid.view import view_config
 from pyramid.view import view_defaults
@@ -47,7 +48,12 @@ class JSONViews(BaseView):
 
     def __init__(self, context, request):
         # Check present key
-        # FIXME
+        settings = request.registry.settings
+        skl_apikey = settings.get('skl.apikey', None)
+        if not skl_apikey:
+            raise HTTPForbidden("No API key configured")
+        if skl_apikey != request.params.get('apikey', object()):
+            raise HTTPForbidden("Wrong API key")
         return super(JSONViews, self).__init__(context, request)
 
     def _timestamp(self, value):
@@ -89,9 +95,15 @@ class JSONViews(BaseView):
         for tn in ('AgendaItem', 'Proposal', 'DiscussionPost', 'Poll'):
             res['manifest'][tn] = self._count(meeting, tn)
         res['manifest']['InviteTicket'] = len(meeting.invite_tickets)
-        res['invite_tickets']
-        #open
-        #closed
+        open_tkt = 0
+        closed_tkt = 0
+        for tkt in meeting.invite_tickets.values():
+            if tkt.closed == None:
+                open_tkt += 1
+            else:
+                closed_tkt += 1
+        res['invite_tickets']['open'] = open_tkt
+        res['invite_tickets']['closed'] = closed_tkt
         return res
 
     def _agenda_item(self, ai):
@@ -179,8 +191,6 @@ class JSONViews(BaseView):
             'Poll': self._poll,
             'Meeting': self._meeting,
         }
-
-#FIXME Export tickets!
 
 
 def includeme(config):
