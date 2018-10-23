@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from voteit.core import security
 from voteit.core.models.interfaces import IProposal
 
