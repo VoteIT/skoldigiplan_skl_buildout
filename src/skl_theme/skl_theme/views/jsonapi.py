@@ -13,15 +13,8 @@ from voteit.core.helpers import get_meeting_participants
 from voteit.core.models.interfaces import IMeeting
 
 
-@view_defaults(renderer='json', permission=NO_PERMISSION_REQUIRED)
-class JSONViews(BaseView):
-    """
-        Has two main views:
-        - /list_meetings.json - does exactly what you think :)
-        - /<meeting-id>/export_meeting.json - Gets full meeting info including everything contained.
-    """
-
-
+class APIKeyView(BaseView):
+    """ Protect API views with API key (GET value) """
     def __init__(self, context, request):
         # Check present key
         settings = request.registry.settings
@@ -30,7 +23,16 @@ class JSONViews(BaseView):
             raise HTTPForbidden("No API key configured")
         if skl_apikey != request.params.get('apikey', object()):
             raise HTTPForbidden("Wrong API key")
-        return super(JSONViews, self).__init__(context, request)
+        super(APIKeyView, self).__init__(context, request)
+
+
+@view_defaults(renderer='json', permission=NO_PERMISSION_REQUIRED)
+class JSONViews(APIKeyView):
+    """
+        Has two main views:
+        - /list_meetings.json - does exactly what you think :)
+        - /<meeting-id>/export_meeting.json - Gets full meeting info including everything contained.
+    """
 
     def _timestamp(self, value):
         if value is not None:

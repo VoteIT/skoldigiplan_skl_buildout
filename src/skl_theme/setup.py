@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 import os
 
 from setuptools import setup, find_packages
@@ -9,7 +12,9 @@ with open(os.path.join(here, 'CHANGES.rst')) as f:
     CHANGES = f.read()
 
 requires = ('Arche',
-            'voteit.core',)
+            'voteit.core',
+            'unicodecsv',
+            )
 
 tests_require = [
     'WebTest >= 1.3.1',  # py3 compat
