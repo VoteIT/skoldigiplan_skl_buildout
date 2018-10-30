@@ -22,7 +22,7 @@ _HERE = os.path.abspath(os.path.dirname(__file__))
 def get_kommun_values():
     if not kommuner_cached:
         with open(os.path.join(_HERE, 'data/kommuner.csv')) as csvfile:
-            reader = csv.reader(csvfile, delimiter=str(','), encoding='utf8')
+            reader = csv.reader(csvfile, delimiter=str(','))
             for row in reader:
                 try:
                     kom_id = int(row[0])

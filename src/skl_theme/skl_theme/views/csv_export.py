@@ -2,14 +2,15 @@
 from __future__ import unicode_literals
 
 from arche.interfaces import IRoot
-from arche.security import groupfinder
+from pyramid.decorator import reify
 from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.view import view_config
 from pyramid.view import view_defaults
 from repoze.catalog.query import Eq
 from skl_theme.interfaces import IEffectSettings
+from skl_theme.schemas import get_kommun_values
+from skl_theme.schemas import _organisation_values
 from skl_theme.views.jsonapi import APIKeyView
-from voteit.core.helpers import get_meeting_participants
 from voteit.core.models.interfaces import IMeeting
 from voteit.core.security import ROLE_VOTER
 
@@ -18,6 +19,18 @@ from voteit.core.security import ROLE_VOTER
 class CSVExports(APIKeyView):
     def get_voter_count(self, meeting):
         return len(list(meeting.local_roles.get_any_local_with(ROLE_VOTER)))
+
+    @reify
+    def kommun_dict(self):
+        return dict(get_kommun_values())
+
+    @reify
+    def org_dict(self):
+        return dict(_organisation_values)
+
+    @reify
+    def users(self):
+        return self.request.root['users']
 
     @view_config(name='all_proposals.csv')
     def meetings(self):
@@ -53,11 +66,14 @@ class CSVExports(APIKeyView):
                                 if prop.uid in winners:
                                     position = '{}/{}'.format(winners.index(prop.uid)+1, len(winners))
                                     voters = '{}/{}'.format(len(poll.ballots), voter_count)
+                        creator = self.users[prop.creator[0]]
                         yield([
                             obj.title,
                             ai.title,
                             prop.text,
-                            ' '.join(prop.creator),
+                            creator.title,
+                            self.kommun_dict.get(creator.kommun),
+                            ' '.join(self.org_dict.get(org) for org in creator.organisation),
                             prop.created.strftime('%Y-%m-%d %H:%M'),
                             ' '.join(effect_tags),
                             ' '.join(other_tags),
@@ -71,6 +87,8 @@ class CSVExports(APIKeyView):
                 'Dagordningspunkt',
                 'Brödtext',
                 'Förslagställare',
+                'Kommun',
+                'Organisation(er)',
                 'Tid',
                 'Vem-taggar',
                 'Alla taggar',
