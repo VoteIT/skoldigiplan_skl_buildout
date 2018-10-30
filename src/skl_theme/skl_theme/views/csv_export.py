@@ -54,8 +54,8 @@ class CSVExports(APIKeyView):
                                     position = '{}/{}'.format(winners.index(prop.uid)+1, len(winners))
                                     voters = '{}/{}'.format(len(poll.ballots), voter_count)
                         yield([
-                            name,
-                            ai.__name__,
+                            obj.title,
+                            ai.title,
                             prop.text,
                             ' '.join(prop.creator),
                             prop.created.strftime('%Y-%m-%d %H:%M'),
