@@ -7,16 +7,18 @@ from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.view import view_config
 from pyramid.view import view_defaults
 from repoze.catalog.query import Eq
+from voteit.core.models.interfaces import IMeeting
+from voteit.core.security import ROLE_VOTER
+
 from skl_theme.interfaces import IEffectSettings
 from skl_theme.schemas import get_kommun_values
 from skl_theme.schemas import _organisation_values
 from skl_theme.views.jsonapi import APIKeyView
-from voteit.core.models.interfaces import IMeeting
-from voteit.core.security import ROLE_VOTER
 
 
 @view_defaults(context=IRoot, renderer='csv', permission=NO_PERMISSION_REQUIRED)
 class CSVExports(APIKeyView):
+
     def get_voter_count(self, meeting):
         return len(list(meeting.local_roles.get_any_local_with(ROLE_VOTER)))
 
@@ -74,7 +76,7 @@ class CSVExports(APIKeyView):
                             creator.title,
                             self.kommun_dict.get(creator.kommun),
                             ' '.join(self.org_dict.get(org) for org in creator.organisation),
-                            prop.created.strftime('%Y-%m-%d %H:%M'),
+                            self.request.dt_handler.format_dt(prop.created),
                             ' '.join(effect_tags),
                             ' '.join(other_tags),
                             position,
