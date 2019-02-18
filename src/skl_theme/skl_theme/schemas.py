@@ -45,6 +45,9 @@ _organisation_values = (
     ('annat_foretag', "Annat företag"),
     ('branschorganisation', "Branschorganisation"),
     ('ideell_organisation', "Ideell organisation"),
+    ('gymnasium', "Gymnasium"),
+    ('grundskola', "Grundskola"),
+    ('vuxenutbildning', "Vuxenutbildning"),
 )
 
 
